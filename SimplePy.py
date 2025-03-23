@@ -238,7 +238,6 @@ class Sprite:
         self.speed = 0
         self.image = None
         self.image_object = None
-        self.rotate = 0
         self.rotate_visual = False
 
         self.anchor = "center"
@@ -368,7 +367,7 @@ class Sprite:
                 anchor_absolute_x = self.x + self.anchor_x_offset
                 anchor_absolute_y = self.y + self.anchor_y_offset
 
-                angle_rad = math.radians(self.rotate)
+                angle_rad = math.radians(self.direction)
                 cos_val = math.cos(angle_rad)
                 sin_val = math.sin(angle_rad)
 
@@ -583,12 +582,9 @@ class Sprite:
                     self._transform_active = False
                     return
 
-            elif property == "rotate":
-                setattr(self, property, start_value + (end_value - start_value) * eased_progress)
-                self.rotate_visual = True
-
             elif property == "direction":
                 setattr(self, property, start_value + (end_value - start_value) * eased_progress)
+                self.rotate_visual = True
 
             else:
                 setattr(self, property, start_value + (end_value - start_value) * eased_progress)
@@ -602,14 +598,6 @@ class Sprite:
 
     def _rgb_to_hex(self, r, g, b):
         return "#{:02x}{:02x}{:02x}".format(r, g, b)
-
-    def add_rotation(self, angle):
-      self.rotate += angle
-      self.rotate_visual = True
-
-    def set_rotation(self, angle):
-      self.rotate = angle
-      self.rotate_visual = True
 
 
 if __name__ == "__main__":
@@ -644,13 +632,7 @@ if __name__ == "__main__":
             player.transform(width=100, height=100, color="#00FF00", transform="ease_in_out", duration=2)
 
         if game.is_key_pressed("r"):
-            player.transform(rotate=360, transform="linear", duration=3)
-
-        if game.is_key_pressed("e"):
-            player.transform(direction=180, transform="linear", duration=3)
-
-        if player.on_hover():
-            print("LOL")
+            player.transform(direction=360, transform="linear", duration=3)
 
     def draw():
         game.draw_text(f"Mouse: ({game.mouse_x}, {game.mouse_y})", 20, 20, anchor="left")
@@ -658,7 +640,6 @@ if __name__ == "__main__":
         game.draw_text("Press f to freeze the game", 20, 60, anchor="left")
         game.draw_text("Press t to transform the square", 20, 80, anchor="left")
         game.draw_text("Press r to rotate the square", 20, 100, anchor="left")
-        game.draw_text("Press e to set direction", 20, 120, anchor="left")
         game.draw_text(f"FPS: {game.current_fps}", 700, 20, anchor="topleft")
         if game.is_frozen:
             game.draw_text("FROZEN", game.width / 2, game.height / 2, color="black", size=30)
